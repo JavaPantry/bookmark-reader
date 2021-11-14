@@ -1,3 +1,21 @@
+# Print row instead of accessing row directly with index
+# #rows keys: id, url, title, visit_count, typed_count, last_visit_time, hidden
+# keys = ['id', 'url', 'title', 'visit_count', 'typed_count', 'last_visited', 'hidden']
+# for row in cursor:
+#     rowStr = printRow(row, keys)
+#     print(rowStr)
+#
+# old code
+# for row in cursor:
+#     print("ID:", row[0])
+#     print("URL:", row[1])
+#     print("Title:", row[2])
+#     print("Visit Count:", row[3])
+#     print("Typed Count:", row[4])
+#     print("Last Visit Time:", row[5])
+#     print("Hidden:", row[6])
+#     print("\n")
+
 def printRow(row, keys):
     for key in keys:
         buffer = "{"
@@ -8,6 +26,7 @@ def printRow(row, keys):
         buffer = buffer[:-1]
         buffer += "}"
         return buffer
+
 
 def readFolder(folder, toArray, level=0):
     # construct indent on level 
