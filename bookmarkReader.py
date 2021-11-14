@@ -15,17 +15,7 @@ import sqlite3
 from sqlite3 import Error
 import datetime
 import time
-
-def printRow(row, keys):
-    for key in keys:
-        buffer = "{"
-        # loop through keys and add row[key index] to buffer
-        for key in keys:
-            buffer += '"' + key + '":"' + str(row[keys.index(key)]) + '",'
-        # remove last comma
-        buffer = buffer[:-1]
-        buffer += "}"
-        return buffer
+from bookmarkReaderutils import *
 
 def readFolder(folder, level=0):
     # construct indent on level 
@@ -61,6 +51,7 @@ urls = []
 
 # Get bookmark_bar root folder
 bookmarkRoot = json_data["roots"]["bookmark_bar"]
+# external function readFolder(bookmarkRoot, urls)
 readFolder(bookmarkRoot)
 
 # write urls to file
