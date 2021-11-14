@@ -16,6 +16,17 @@ from sqlite3 import Error
 import datetime
 import time
 
+def printRow(row, keys):
+    for key in keys:
+        buffer = "{"
+        # loop through keys and add row[key index] to buffer
+        for key in keys:
+            buffer += '"' + key + '":"' + str(row[keys.index(key)]) + '",'
+        # remove last comma
+        buffer = buffer[:-1]
+        buffer += "}"
+        return buffer
+
 def readFolder(folder, level=0):
     # construct indent on level 
     indent = '\t' * level
@@ -45,19 +56,12 @@ except Exception:
     print("Error: File not found")
     exit()
 
-# Get list of folders
-Folders = json_data["roots"]["other"]["children"]
 # Get list of urls
 urls = []
 
 # Get bookmark_bar root folder
 bookmarkRoot = json_data["roots"]["bookmark_bar"]
 readFolder(bookmarkRoot)
-
-# print urls
-# print("\nUrls:")
-# for url in urls:
-#     print(url[0], ":", url[1])
 
 # write urls to file
 print("\nSaving bookmarks in .output\MyBookmarks-urls.txt ")
@@ -72,35 +76,19 @@ print("\n connect  to SqlLight db")
 try:
     conn = sqlite3.connect('.input\History')
     print("Connected to SQLite")
-    # select all urls from urls table
     # cursor = conn.execute("SELECT urls.url, urls.title, urls.visit_count, urls.typed_count, urls.last_visit_time, urls.hidden, urls.fk, urls.fk_folder, folders.title FROM urls LEFT JOIN folders ON urls.fk_folder = folders.id")
-
-    #cursor = conn.execute("SELECT urls.id, urls.url, urls.title, urls.visit_count, urls.typed_count, datetime(last_visit_time,'unixepoch'), urls.hidden FROM urls")
     cursor = conn.execute("SELECT id, url, title, visit_count, typed_count, datetime(last_visit_time/1000000-11644473600, \"unixepoch\") as last_visited, hidden FROM urls ORDER BY last_visited DESC")
-    # for row in cursor:
-    #     print("ID:", row[0])
-    #     print("URL:", row[1])
-    #     print("Title:", row[2])
-    #     print("Visit Count:", row[3])
-    #     print("Typed Count:", row[4])
-    #     print("Last Visit Time:", row[5])
-    #     print("Hidden:", row[6])
-    #     print("\n")
     
     # rows keys: id, url, title, visit_count, typed_count, last_visit_time, hidden
     keys = ['id', 'url', 'title', 'visit_count', 'typed_count', 'last_visited', 'hidden']
 
     # row keys:
     max = 10
+    counter = 1
     for row in cursor:
-        buffer = "{"
-        # loop through keys and add row[key index] to buffer
-        for key in keys:
-            buffer += '"' + key + '":"' + str(row[keys.index(key)]) + '",'
-        # remove last comma
-        buffer = buffer[:-1]
-        buffer += "}"
-        print(buffer)
+        rowStr = printRow(row, keys)
+        print(str(counter) + ":" + rowStr)
+        counter += 1
         max -= 1
         if max == 0:
             break
@@ -112,13 +100,11 @@ print("\nGood Bye")
 exit()
 
 # Get list of folders
-Folders = []
-for folder in Folders:
-    Folders.append(folder["name"])
 # Get list of folders
-Folders = []
-for folder in Folders:
-    print(folder["name"])
+            # Folders = json_data["roots"]["other"]["children"]
+            # Folders = []
+            # for folder in Folders:
+            #     Folders.append(folder["name"])
 
     
 
