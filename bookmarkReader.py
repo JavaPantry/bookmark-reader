@@ -11,6 +11,10 @@
 #
 import os
 import json
+import sqlite3
+from sqlite3 import Error
+import datetime
+import time
 
 def readFolder(folder, level=0):
     # construct indent on level 
@@ -33,9 +37,6 @@ print(os.listdir())
 Input = input("Enter file name (default '.input\Bookmarks'): ") or ".input\Bookmarks"
 print("selected File name: ", Input)
 
-# declare json file
-
-
 # Read file from current folder as json
 try:
     with open(Input, "r", encoding="utf-8") as json_file:
@@ -54,14 +55,58 @@ bookmarkRoot = json_data["roots"]["bookmark_bar"]
 readFolder(bookmarkRoot)
 
 # print urls
-print("\nUrls:")
-for url in urls:
-    print(url[0], ":", url[1])
+# print("\nUrls:")
+# for url in urls:
+#     print(url[0], ":", url[1])
 
 # write urls to file
+print("\nSaving bookmarks in .output\MyBookmarks-urls.txt ")
 with open(".output\MyBookmarks-urls.txt", "w", encoding="utf-8") as f:
     for url in urls:
         f.write(url[0] + ": " + url[1] + "\n")
+print("\n bookmarks Saved in .output\MyBookmarks-urls.txt ")
+
+
+print("\n connect  to SqlLight db")
+# connect  to SqlLight db and write urls to table
+try:
+    conn = sqlite3.connect('.input\History')
+    print("Connected to SQLite")
+    # select all urls from urls table
+    # cursor = conn.execute("SELECT urls.url, urls.title, urls.visit_count, urls.typed_count, urls.last_visit_time, urls.hidden, urls.fk, urls.fk_folder, folders.title FROM urls LEFT JOIN folders ON urls.fk_folder = folders.id")
+
+    #cursor = conn.execute("SELECT urls.id, urls.url, urls.title, urls.visit_count, urls.typed_count, datetime(last_visit_time,'unixepoch'), urls.hidden FROM urls")
+    cursor = conn.execute("SELECT id, url, title, visit_count, typed_count, datetime(last_visit_time/1000000-11644473600, \"unixepoch\") as last_visited, hidden FROM urls ORDER BY last_visited DESC")
+    # for row in cursor:
+    #     print("ID:", row[0])
+    #     print("URL:", row[1])
+    #     print("Title:", row[2])
+    #     print("Visit Count:", row[3])
+    #     print("Typed Count:", row[4])
+    #     print("Last Visit Time:", row[5])
+    #     print("Hidden:", row[6])
+    #     print("\n")
+    
+    # rows keys: id, url, title, visit_count, typed_count, last_visit_time, hidden
+    keys = ['id', 'url', 'title', 'visit_count', 'typed_count', 'last_visited', 'hidden']
+
+    # row keys:
+    max = 10
+    for row in cursor:
+        buffer = "{"
+        # loop through keys and add row[key index] to buffer
+        for key in keys:
+            buffer += '"' + key + '":"' + str(row[keys.index(key)]) + '",'
+        # remove last comma
+        buffer = buffer[:-1]
+        buffer += "}"
+        print(buffer)
+        max -= 1
+        if max == 0:
+            break
+except Error as e:
+    print("Error:", e)
+
 
 print("\nGood Bye")
 exit()
