@@ -17,19 +17,6 @@ import datetime
 import time
 from bookmarkReaderutils import *
 
-def readFolder(folder, level=0):
-    # construct indent on level 
-    indent = '\t' * level
-    for child in folder["children"]:
-        if "url" in child:
-            # print(child["name"], ":", child["url"])
-            urls.append((indent+child["name"], child["url"]))
-        else:
-            # print(child["name"])
-            urls.append((indent + "Folder", child["name"]))
-            readFolder(child, level+1)
-
-
 print("Hello. Put bookmark json file in current folder\n Currently supports Brave bookmark json file format.")
 print("current folder contains")
 # list files in current folder
@@ -46,13 +33,10 @@ except Exception:
     print("Error: File not found")
     exit()
 
-# Get list of urls
-urls = []
-
 # Get bookmark_bar root folder
+urls = []
 bookmarkRoot = json_data["roots"]["bookmark_bar"]
-# external function readFolder(bookmarkRoot, urls)
-readFolder(bookmarkRoot)
+readFolder(bookmarkRoot, urls)
 
 # write urls to file
 print("\nSaving bookmarks in .output\MyBookmarks-urls.txt ")

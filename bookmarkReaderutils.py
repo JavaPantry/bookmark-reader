@@ -9,15 +9,15 @@ def printRow(row, keys):
         buffer += "}"
         return buffer
 
-# def readFolder(folder, toArray, level=0):
-#     # construct indent on level 
-#     indent = '\t' * level
-#     for child in folder["children"]:
-#         if "url" in child:
-#             # print(child["name"], ":", child["url"])
-#             toArray.append((indent+child["name"], child["url"]))
-#         else:
-#             # print(child["name"])
-#             toArray.append((indent + "Folder", child["name"]))
-#             readFolder(child, level+1)
+def readFolder(folder, toArray, level=0):
+    # construct indent on level 
+    indent = '\t' * level
+    for child in folder["children"]:
+        if "url" in child:
+            # print(child["name"], ":", child["url"])
+            toArray.append((indent+child["name"], child["url"]))
+        else:
+            # print(child["name"])
+            toArray.append((indent + "Folder", child["name"]))
+            readFolder(child, toArray, level+1)
 
