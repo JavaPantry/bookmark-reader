@@ -30,7 +30,7 @@ print("current folder contains")
 # list files in current folder
 print(os.listdir())
 
-Input = input("Enter file name (default 'Bookmarks'): ") or "Bookmarks"
+Input = input("Enter file name (default '.input\Bookmarks'): ") or ".input\Bookmarks"
 print("selected File name: ", Input)
 
 # declare json file
@@ -59,7 +59,7 @@ for url in urls:
     print(url[0], ":", url[1])
 
 # write urls to file
-with open("MyBookmarks-urls.txt", "w", encoding="utf-8") as f:
+with open(".output\MyBookmarks-urls.txt", "w", encoding="utf-8") as f:
     for url in urls:
         f.write(url[0] + ": " + url[1] + "\n")
 
@@ -74,8 +74,6 @@ for folder in Folders:
 Folders = []
 for folder in Folders:
     print(folder["name"])
-
-
 
     
 
