@@ -15,6 +15,8 @@
 #     print("Last Visit Time:", row[5])
 #     print("Hidden:", row[6])
 #     print("\n")
+#
+# Return string {"id":"16","url":"https://feedly.com/","title":"ZhZh","visit_count":"1330","typed_count":"0","last_visited":"2021-11-12 13:15:56","hidden":"0"}
 
 def printRow(row, keys):
     for key in keys:
