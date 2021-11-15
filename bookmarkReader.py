@@ -13,8 +13,6 @@ import os
 import json
 import sqlite3
 from sqlite3 import Error
-import datetime
-import time
 from bookmarkReaderutils import *
 
 print("Hello. Put bookmark json file in current folder\n Currently supports Brave bookmark json file format.")
