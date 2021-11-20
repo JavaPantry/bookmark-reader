@@ -66,8 +66,14 @@ try:
         max -= 1
         if max == 0:
             break
+
+    # close db connection
+    conn.close()
+
 except Error as e:
     print("Error:", e)
+    # close db connection
+    conn.close()
 
 
 print("\nGood Bye")
