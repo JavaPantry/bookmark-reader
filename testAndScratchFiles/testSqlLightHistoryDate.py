@@ -1,6 +1,12 @@
 import sqlite3
 from sqlite3 import Error
+
+# Instead: `from bookmarkReaderutils import *` use this
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from bookmarkReaderutils import *
+
+
 
 # connect  to SqlLight db and write urls to table
 try:
