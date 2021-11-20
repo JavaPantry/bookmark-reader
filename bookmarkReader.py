@@ -1,7 +1,8 @@
 #
 # November 13, 2021
 # Run in anaconda's base python3 environment
-# Brave browser bookmarks file can be taken from c:\Users\Alexei\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks
+# Brave  bookmarks file can be taken from c:\Users\Alexei\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks
+# Chrome bookmarks file can be taken from c:\Users\Alexei\AppData\Local\Google\Chrome\User Data\Default\Bookmarks
 # 
 # - remove loop to read root folder and point recursive readFolder() to root folder bookmarkRoot
 #
