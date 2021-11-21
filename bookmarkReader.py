@@ -44,6 +44,58 @@ with open(".output\MyBookmarks-urls.txt", "w", encoding="utf-8") as f:
         f.write(url[0] + ": " + url[1] + "\n")
 print("\n bookmarks Saved in .output\MyBookmarks-urls.txt ")
 
+print("\n open SqlLight in memory db")
+# open SqlLight in memory db
+try:
+    memoryConnection = sqlite3.connect(":memory:")
+except Error as e:
+    print(e)
+
+print("\n create table")
+# create table
+c = memoryConnection.cursor()
+c.execute('''CREATE TABLE bookmarks(
+        id integer primary key,
+        url text,
+        title text,
+        folder text,
+        parentFolder text,
+        parentId integer
+        )''')
+print("\n table created")
+
+print("\n inserting bookmarks")
+# insert bookmarks
+for url in urls:
+    # url[0] = url[0].replace("'", "''")
+    # url[1] = url[1].replace("'", "''")
+    # url[2] = url[2].replace("'", "''")
+    # url[3] = url[3].replace("'", "''")
+    # url[4] = url[4].replace("'", "''")
+    c.execute("INSERT INTO bookmarks VALUES (NULL, ?, ?, 'field 3', 'field 4', 'field 5')", url)
+print("\n bookmarks inserted")
+
+print("\n save changes")
+# Save changes
+memoryConnection.commit()
+
+# Inspect or Visualize in memory database created using sqlite jdbc during debugging
+#       https://stackoverflow.com/questions/19098903/inspect-or-visualize-in-memory-database-created-using-sqlite-jdbc-during-debug
+
+# save Sqlite in memory db to file
+print("\n save Sqlite in memory db to file")
+memoryCursor = memoryConnection.execute("SELECT * FROM bookmarks")
+with open(".output\MyBookmarks-sqlite.txt", "w", encoding="utf-8") as f:
+    for row in memoryCursor:
+        f.write(str(row) + "\n")
+print("\n Sqlite in memory db saved to file")
+
+print("\n close connection")
+# Close connection
+memoryConnection.close()
+print("\n Memory database Done")
+
+
 
 print("\n connect  to SqlLight db")
 # connect  to SqlLight db and write urls to table
