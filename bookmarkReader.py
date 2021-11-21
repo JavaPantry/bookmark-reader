@@ -74,11 +74,6 @@ print("\n table created")
 print("\n inserting bookmarks")
 # insert bookmarks
 for url in urls:
-    # url[0] = url[0].replace("'", "''")
-    # url[1] = url[1].replace("'", "''")
-    # url[2] = url[2].replace("'", "''")
-    # url[3] = url[3].replace("'", "''")
-    # url[4] = url[4].replace("'", "''")
     c.execute("INSERT INTO bookmarks VALUES (NULL, ?, ?, 'field 3', 'field 4', 'field 5')", url)
 print("\n bookmarks inserted")
 
@@ -167,16 +162,15 @@ except Error as e:
     print(e)
 
 # 
-# Implement 4 different ways to save in-memory database to file
+# Implement 3 different ways to save in-memory database to file
 #
 
-dumpInMemoryDbToDiskCustom(memoryConnection, ".output\MyBookmarks-sqlite-Custom.db")
-backupInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-backup.db")
-dumpInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-Dump.db")
-iterdumpInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-interDump.db")
+dumpInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-dump.db")
+# backupInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-backup.db")
+# iterdumpInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-interDump.db")
 
 # Close connection
-print("\n close connection")
+print("\n close memoryConnection")
 memoryConnection.commit()
 memoryConnection.close()
 print("\n Memory database Done")

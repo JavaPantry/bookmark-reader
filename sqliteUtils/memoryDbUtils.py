@@ -17,7 +17,7 @@ import os
 import sqlite3
 from sqlite3 import Error
 
-def dumpInMemoryDbToDiskCustom(memoryConnection, fileName):
+def dumpInMemoryDbToDisk(memoryConnection, fileName):
     try:
         # delete existing file
         if (os.path.isfile(fileName)):
@@ -43,21 +43,11 @@ def backupInMemoryDbToDisk(memoryConnection, fileName):
         # dump in-memory database to disk file
         diskConnection = sqlite3.connect(fileName)
         memoryConnection.backup(diskConnection)
+        # close SqlLight db
+        diskConnection.commit()
+        diskConnection.close()
     except Error as e:
         print(e)
-
-def dumpInMemoryDbToDisk(memoryConnection, fileName):
-    try:
-        # delete existing file
-        if (os.path.isfile(fileName)):
-            os.remove(fileName)
-        # dump in-memory database to disk file
-        diskConnection = sqlite3.connect(fileName)
-        memoryConnection.backup(diskConnection)
-        diskConnection = sqlite3.connect(".output\MyBookmarks-sqlite-dump.db")
-    except Error as e:
-        print(e)
-
 
 def iterdumpInMemoryDbToDisk(memoryConnection, fileName):
     try:
@@ -73,6 +63,19 @@ def iterdumpInMemoryDbToDisk(memoryConnection, fileName):
                 dbCursor.execute(tableName)
     except Error as e:
         print(e)
+
+# Not working - No such method in memoryConnection 
+# def dumpInMemoryDbToDisk(memoryConnection, fileName):
+#     try:
+#         # delete existing file
+#         if (os.path.isfile(fileName)):
+#             os.remove(fileName)
+#         # dump in-memory database to disk file
+#         with open(fileName, "w") as f:
+#             # dump in-memory database to file
+# No such method in memoryConnection>>>            memoryConnection.dump(f)    
+#     except Error as e:
+#         print(e)
 
 
         
