@@ -82,16 +82,65 @@ memoryConnection.commit()
 # Inspect or Visualize in memory database created using sqlite jdbc during debugging
 #       https://stackoverflow.com/questions/19098903/inspect-or-visualize-in-memory-database-created-using-sqlite-jdbc-during-debug
 
-# save Sqlite in memory db to file
+# save Sqlite in memory db to text file
 print("\n save Sqlite in memory db to file")
 memoryCursor = memoryConnection.execute("SELECT * FROM bookmarks")
 with open(".output\MyBookmarks-sqlite.txt", "w", encoding="utf-8") as f:
     for row in memoryCursor:
         f.write(str(row) + "\n")
-print("\n Sqlite in memory db saved to file")
+print("\n Sqlite in memory db saved to '.output\MyBookmarks-sqlite.txt' file")
+
+# save Sqlite in memory db to disk
+# open new SqlLight db file
+print("\n save Sqlite in memory db to disk")
+try:
+    diskConnection = sqlite3.connect(".output\MyBookmarks-sqlite.db")
+except Error as e:
+    print(e)
+
+print("\n create table")
+# create table
+diskCursor = diskConnection.cursor()
+diskCursor.execute('''CREATE TABLE bookmarks(
+        id integer primary key,
+        url text,
+        title text,
+        folder text,
+        parentFolder text,
+        parentId integer
+        )''')
+print("\n table created")
+
+print("\n inserting bookmarks")
+# insert bookmarks
+for url in urls:
+    diskCursor.execute("INSERT INTO bookmarks VALUES (NULL, ?, ?, 'field 3', 'field 4', 'field 5')", url)
+print("\n bookmarks inserted")
+
+print("\n save changes")
+# Save changes
+diskConnection.commit()
+
+# print("\n save Sqlite in disk db to file")
+# diskCursor = diskConnection.execute("SELECT * FROM bookmarks")
+# with open(".output\MyBookmarks-sqlite.txt", "w", encoding="utf-8") as f:
+#     for row in diskCursor:
+#         f.write(str(row) + "\n")
+# print("\n Sqlite in disk db saved to '.output\MyBookmarks-sqlite.txt' file")
+# print("\n close SqlLight db")
+
+
+# close SqlLight db
+try:
+    # memoryConnection.close()
+    diskConnection.close()
+except Error as e:
+    print(e)
+
 
 print("\n close connection")
 # Close connection
+memoryConnection.commit()
 memoryConnection.close()
 print("\n Memory database Done")
 
