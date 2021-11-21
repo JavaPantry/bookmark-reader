@@ -79,6 +79,25 @@ print("\n save changes")
 # Save changes
 memoryConnection.commit()
 
+
+c = memoryConnection.cursor()
+c.execute('''CREATE TABLE users(
+        id integer primary key,
+        name text,
+        password text
+        )''')
+print("\n users table created")
+c.execute("INSERT INTO users VALUES (NULL, 'Alex', 'password')")
+c.execute("INSERT INTO users VALUES (NULL, 'Joe', 'password1')")
+c.execute("INSERT INTO users VALUES (NULL, 'James', 'password2')")
+c.execute("INSERT INTO users VALUES (NULL, 'Mary', 'password3')")
+print("\n users inserted")
+
+print("\n save changes")
+# Save changes
+memoryConnection.commit()
+
+
 # Inspect or Visualize in memory database created using sqlite jdbc during debugging
 #       https://stackoverflow.com/questions/19098903/inspect-or-visualize-in-memory-database-created-using-sqlite-jdbc-during-debug
 
@@ -136,6 +155,36 @@ try:
     diskConnection.close()
 except Error as e:
     print(e)
+
+
+#
+# DUMP database
+#
+
+try:
+    diskConnection = sqlite3.connect(".output\MyBookmarks-sqlite-dump.db")
+except Error as e:
+    print(e)
+
+# dump memoryConnection to diskConnection
+
+# write database to disk
+# https://stackoverflow.com/questions/27474306/with-pythons-sqlite3-module-can-i-save-the-in-memory-db-to-disk-after-creating
+
+with diskConnection:
+  for line in memoryConnection.iterdump():
+    if line not in ('BEGIN;', 'COMMIT;'): # let python handle the transactions
+      diskConnection.execute(line)
+diskConnection.commit()
+
+
+# close SqlLight db
+try:
+    diskConnection.commit()
+    diskConnection.close()
+except Error as e:
+    print(e)
+
 
 
 print("\n close connection")
