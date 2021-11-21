@@ -10,11 +10,18 @@
 # externilize readFolder() function
 # Brave browser (SqlLight db) history file can be taken from c:\Users\Alexei\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History
 #
-import os
+import sys, os
 import json
 import sqlite3
 from sqlite3 import Error
 from bookmarkReaderutils import *
+
+# import backupInMemoryDbToDisk
+# sys.path.append(os.path.join(os.path.dirname(__file__), '/sqliteUtils'))
+# [Import module from subfolder](https://stackoverflow.com/questions/8953844/import-module-from-subfolder)
+#   - Never and ever for the sake of your own good, name the folders or files with symbols like "-" or "_".
+from sqliteUtils.memoryDbUtils import *
+
 
 print("Hello. Put bookmark json file in current folder\n Currently supports Brave bookmark json file format.")
 print("current folder contains")
@@ -113,7 +120,10 @@ print("\n Sqlite in memory db saved to '.output\MyBookmarks-sqlite.txt' file")
 # open new SqlLight db file
 print("\n save Sqlite in memory db to disk")
 try:
-    diskConnection = sqlite3.connect(".output\MyBookmarks-sqlite.db")
+    fileName = ".output\MyBookmarks-sqlite.db"
+    if (os.path.isfile(fileName)):
+            os.remove(fileName)
+    diskConnection = sqlite3.connect(fileName)
 except Error as e:
     print(e)
 
@@ -156,39 +166,17 @@ try:
 except Error as e:
     print(e)
 
-
+# 
+# Implement 4 different ways to save in-memory database to file
 #
-# DUMP database
-#
 
-try:
-    diskConnection = sqlite3.connect(".output\MyBookmarks-sqlite-dump.db")
-except Error as e:
-    print(e)
+dumpInMemoryDbToDiskCustom(memoryConnection, ".output\MyBookmarks-sqlite-Custom.db")
+backupInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-backup.db")
+dumpInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-Dump.db")
+iterdumpInMemoryDbToDisk(memoryConnection, ".output\MyBookmarks-sqlite-interDump.db")
 
-# dump memoryConnection to diskConnection
-
-# write database to disk
-# https://stackoverflow.com/questions/27474306/with-pythons-sqlite3-module-can-i-save-the-in-memory-db-to-disk-after-creating
-
-with diskConnection:
-  for line in memoryConnection.iterdump():
-    if line not in ('BEGIN;', 'COMMIT;'): # let python handle the transactions
-      diskConnection.execute(line)
-diskConnection.commit()
-
-
-# close SqlLight db
-try:
-    diskConnection.commit()
-    diskConnection.close()
-except Error as e:
-    print(e)
-
-
-
-print("\n close connection")
 # Close connection
+print("\n close connection")
 memoryConnection.commit()
 memoryConnection.close()
 print("\n Memory database Done")
